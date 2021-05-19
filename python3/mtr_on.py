@@ -23,7 +23,7 @@ import os
 import can
 
 #check system name, in linux will print 'posix' and in windows will print 'nt'
-#print(os.name)
+print(os.name)
 
 
 os.system('sudo ip link set can0 type can bitrate 1000000')
@@ -31,8 +31,8 @@ os.system('sudo ifconfig can0 up')
 
 can0 = can.interface.Bus(channel = 'can0', bustype = 'socketcan_ctypes')
 
-msg = can.Message(arbitration_id=0x001, data=[0xFF, 0xFF, 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFD], extended_id=False)
+msg = can.Message(arbitration_id=0x001, data=[0xFF, 0xFF, 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFC], extended_id=False)
 can0.send(msg)
-print(msg)
+
 os.system('sudo ifconfig can0 down')
 
