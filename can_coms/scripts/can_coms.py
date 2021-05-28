@@ -26,15 +26,17 @@ class can_com:
 
         # while not rospy.is_shutdown():
                 
-        # new_can_msg = Frame()
-        # new_can_msg.id = 1
-        # new_can_msg.dlc = 8
-        # new_can_msg.data = [0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xfd]
+        new_can_msg = Frame()
+        new_can_msg.id = 1
+        new_can_msg.dlc = 8
+        new_can_msg.data = [0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xfd]
             
         #     self.pub.publish(new_can_msg)
 
     def can_clbk(self, received_messages):
-        rec_msg_int = list(map(int, (received_messages.data).split(" \ ")))
+        # rec_msg_int = list(map(int, (received_messages.data).split(" \ ")))
+        
+        rec_msg_int = bytes(received_messages.data,)
         print(rec_msg_int)
         # payload = bytearray(received_messages.data)
         # pay_array=[x for x in payload]
