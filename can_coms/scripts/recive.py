@@ -21,10 +21,11 @@
 import os
 import can
 
+# os.system("sudo ifconfig can0 txqueuelen 1000")
 os.system('sudo ip link set can0 type can bitrate 1000000')
 os.system('sudo ifconfig can0 up')
-filters = [{"can_id": 3, "can_mask": 0xFFFFFF, "extended": False}]
-can0 = can.interface.Bus(channel = 'can0', bustype = 'socketcan_ctypes',fd=True)
+# filters = [{"can_id": 3, "can_mask": 0xFFFFFF, "extended": False}]
+can0 = can.interface.Bus(channel = 'can0', bustype = 'socketcan',is_extended_id=False)
 
 while True:
     msg = can0.recv(30.0)

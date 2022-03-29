@@ -18,7 +18,7 @@
 
 ###############################################################################
 
-import serial
+# import serial
 from struct import *
 import time
 
@@ -32,13 +32,14 @@ print(os.name)
 os.system('sudo ip link set can0 type can bitrate 1000000')
 os.system('sudo ifconfig can0 up')
 
-can0 = can.interface.Bus(channel = 'can0', bustype = 'socketcan_ctypes')
+can0 = can.interface.Bus(channel = 'can0', bustype = 'socketcan')
 #id = 1
 b = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFD'
+# b = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFC'
 #b = b + bytes(bytearray([id]))
 
 
-msg = can.Message(arbitration_id=0x3, data=b, extended_id=False)
+msg = can.Message(arbitration_id=0x3, data=b, is_extended_id=False)
 can0.send(msg)
 
 #os.system('sudo ifconfig can0 down')

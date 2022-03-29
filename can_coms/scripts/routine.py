@@ -24,7 +24,7 @@ kp_max = 500.0
 kd_min = 0.0
 kd_max = 5.0
 i_min = -18.0
-i_min = 18.0
+i_max = 18.0
 # Send a command:  
 # (CAN ID, position setpoint, velocity setpoint, position gain, velocity gain, feed-forward torque)
 # Units are:  Radians, Rad/s, N-m/rad, N-m/rad/s, N-m
@@ -45,19 +45,20 @@ if __name__ == "__main__":
     # ]
     tasks = []
     mmc.enable_motor()
+    mmc.send_command( 0, 0, 0, 0,  0)
     time.sleep(.1)
     initial_msg = mmc.get_data()
     start_position = mmc.get_data()
 
-    msg_rec = [x for x in start_position.data]
-    print(start_position)
-    p_des = msg_rec[0]
+    # msg_rec = [x for x in start_position.data]
+    p_des = start_position[0]
+    print("msg_rec=",start_position)
+    print("p_des =",p_des)
 
 
-while(p_des > .01):
-    p_des = .99*p_des
-    data=[p_des , 0, 5, 0, 0]
-    # tasks.append(mmc.periodic_send(data))
-    tasks.append(mmc.send_command(p_des , 0, 5, 0, 0))
-    print(p_des)
-    time.sleep(.02)
+    while(p_des > .01):
+        p_des = .99*p_des
+        tasks.append(mmc.send_command_periodic(p_des , 0, 5, 0, 0))
+        time.sleep(0.02)
+
+    mmc.disable_motor()
