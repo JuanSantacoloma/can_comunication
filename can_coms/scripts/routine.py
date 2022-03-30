@@ -20,7 +20,7 @@ p_max = 95.5
 v_min = -45.0
 v_max = 45.0
 kp_min = 0.0
-kp_max = 500.0
+kp_max = 50.0
 kd_min = 0.0
 kd_max = 5.0
 i_min = -18.0
@@ -47,18 +47,24 @@ if __name__ == "__main__":
     mmc.enable_motor()
     mmc.send_command( 0, 0, 0, 0,  0)
     time.sleep(.1)
+
     initial_msg = mmc.get_data()
+    
     start_position = mmc.get_data()
 
     # msg_rec = [x for x in start_position.data]
     p_des = start_position[0]
+    # p_des = 1
     print("msg_rec=",start_position)
     print("p_des =",p_des)
-
-
-    while(p_des > .01):
-        p_des = .99*p_des
-        tasks.append(mmc.send_command_periodic(p_des , 0, 5, 0, 0))
+    # while True:
+    #     position = mmc.get_data()
+    #     print("Position",position)
+    while(p_des > .1):
+        # p_des = .99*p_des
+        tasks.append(mmc.send_command(p_des , 0, 5, 0, 0))
         time.sleep(0.02)
+        position = mmc.get_data()
+        print("Position",position)
 
     mmc.disable_motor()

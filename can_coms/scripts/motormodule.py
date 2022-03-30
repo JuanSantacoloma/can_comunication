@@ -15,12 +15,12 @@ import can
 class MotorModuleController():
     def __init__(self,id):
         try:
-            self.p_min =-95.5
-            self.p_max = 95.5
+            self.p_min =-56.5 # -95.5
+            self.p_max = 56.5 # 95.5
             self.v_min = -45.0
             self.v_max = 45.0
             self.kp_min = 0.0
-            self.kp_max = 500.0
+            self.kp_max = 50.0
             self.kd_min = 0.0
             self.kd_max = 5.0
             self.i_min = -18.0
@@ -69,11 +69,11 @@ class MotorModuleController():
         b.append(kd_int>>4)
         b.append(((kd_int&0xF)<<4)|(t_int>>8))
         b.append(t_int&0xff)
-        print("datasend =",b)
+        # print("datasend =",b)
 
         msg_volt = can.Message(arbitration_id=self.id,
                         data=b,is_extended_id=False)
-        task = self.can0.send_periodic(msg_volt, 0.0001)
+        task = self.can0.send_periodic(msg_volt, 0.00001)
         assert isinstance(task, can.CyclicSendTaskABC)
         return task
         # msg = can.Message(arbitration_id=self.id, data=b, extended_id=False)
@@ -110,19 +110,13 @@ class MotorModuleController():
         p_int = (b_driver[1]<<8)|b_driver[2]
         v_int = (b_driver[3]<<4)|(b_driver[4]>>4)
         i_int = ((b_driver[4]&0xF)<<8)|b_driver[5]
-        print("pint",p_int)
-        print("vint",v_int)
-        print("iint",i_int)
+        # print("pint",p_int)
+        # print("vint",v_int)
+        # print("iint",i_int)
         self.rx_msg =[]
         self.rx_msg.append(self.uint_to_float(p_int, self.p_min, self.p_max, 16))
         self.rx_msg.append(self.uint_to_float(v_int, self.v_min, self.v_max, 12))
-        self.rx_msg.append(self.uint_to_float(i_int, -self.i_min, self.i_max, 12))
-        return self.rx_msg
-        # b_rx_values = [x for x in self.rx_msg.data]
-
-        # self.rx_values.append(b_rx_values[0])
-        # self.rx_values.append(struct.unpack('f', b_rx_values[1:5]) )
-
+        self.rx_msg.append(self.uint_to_float(i_int, self.i_min, self.i_max, 12))
         return self.rx_msg
 
     def send_command(self, p_des, v_des, kp, kd, i_ff):
@@ -152,13 +146,9 @@ class MotorModuleController():
         b.append(t_int&0xff)
         print("datasend =",b)
 
-        msg_volt = can.Message(arbitration_id=self.id,
+        msg = can.Message(arbitration_id=self.id,
                         data=b,is_extended_id=False)
-        self.can0.send(msg_volt)
-        # print("Sending",msg, "to:",id)
-        # print(msg)
-
-        # return task
+        self.can0.send(msg)
 
     def float_to_uint(self,x, x_min, x_max, bits):
         # Converts a float to an unsigned int, given range and number of bits
