@@ -15,16 +15,17 @@ import can
 class MotorModuleController():
     def __init__(self,id):
         try:
-            self.p_min =-56.5 # -95.5
-            self.p_max = 56.5 # 95.5
-            self.v_min = -45.0
-            self.v_max = 45.0
+            self.gr = 9.0
+            self.p_min =-12.5 # -95.5 @ -56.5
+            self.p_max = 12.5 # 95.5 @ 56.5
+            self.v_min = -65.0
+            self.v_max = 65.0
             self.kp_min = 0.0
             self.kp_max = 50.0
             self.kd_min = 0.0
             self.kd_max = 5.0
-            self.i_min = -18.0
-            self.i_max = 18.0
+            self.i_min = -2.7
+            self.i_max = 2.7
             self.id=int(id)
             self.rx_values = []
 
@@ -105,18 +106,15 @@ class MotorModuleController():
     def get_data(self):
         msg_recv = self.can0.recv(2.0)
         b_driver = msg_recv.data
-        print("b_driver",b_driver)
+        # print("b_driver",b_driver)
         id = b_driver[0]
-        p_int = (b_driver[1]<<8)|b_driver[2]
-        v_int = (b_driver[3]<<4)|(b_driver[4]>>4)
-        i_int = ((b_driver[4]&0xF)<<8)|b_driver[5]
-        # print("pint",p_int)
-        # print("vint",v_int)
-        # print("iint",i_int)
+        p_int_r = (b_driver[1]<<8)|b_driver[2]
+        v_int_r = (b_driver[3]<<4)|(b_driver[4]>>4)
+        t_int_r = ((b_driver[4]&0xF)<<8)|b_driver[5]
         self.rx_msg =[]
-        self.rx_msg.append(self.uint_to_float(p_int, self.p_min, self.p_max, 16))
-        self.rx_msg.append(self.uint_to_float(v_int, self.v_min, self.v_max, 12))
-        self.rx_msg.append(self.uint_to_float(i_int, self.i_min, self.i_max, 12))
+        self.rx_msg.append(self.uint_to_float(p_int_r, self.p_min, self.p_max, 16))
+        self.rx_msg.append(self.uint_to_float(v_int_r, self.v_min, self.v_max, 12))
+        self.rx_msg.append(self.uint_to_float(t_int_r, self.i_min, self.i_max, 12))
         return self.rx_msg
 
     def send_command(self, p_des, v_des, kp, kd, i_ff):
@@ -144,11 +142,12 @@ class MotorModuleController():
         b.append(kd_int>>4)
         b.append(((kd_int&0xF)<<4)|(t_int>>8))
         b.append(t_int&0xff)
-        print("datasend =",b)
+        # print("datasend =",b)
 
         msg = can.Message(arbitration_id=self.id,
                         data=b,is_extended_id=False)
         self.can0.send(msg)
+        return [p_des, v_des, kp, kd, t_ff]
 
     def float_to_uint(self,x, x_min, x_max, bits):
         # Converts a float to an unsigned int, given range and number of bits
@@ -160,7 +159,7 @@ class MotorModuleController():
         # Converts unsigned int to float, given range and number of bits
         span = x_max - x_min
         offset = x_min
-        return (float(x))*span/(float(((1<<bits)-1))) + offset
+        return ((float(x))*span/(float(((1<<bits)-1))) )+ offset
 
     def fmin(self,x,y):
         if x<y:
