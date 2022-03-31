@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # ]
     tasks = []
     recep = []
-    fields = ['POS', 'VEL', 'Torq']
+    response_motor = ['Timestamp','POS', 'VEL', 'Torq']
     fields_2 = ['POS_Set_point', 'VEL_setpoint', 'POS gain', 'VEL gain', 'FOC']
 
     mmc.enable_motor()
@@ -34,38 +34,38 @@ if __name__ == "__main__":
     
     start_position = mmc.get_data()
 
-    # msg_rec = [x for x in start_position.data]
-    p_des = start_position[0]
-    # p_des = 1
+    # Posicion inicial del motor
+    p_des = start_position[1]
+    
+    # Posicion deseada
     print("msg_rec=",start_position)
     print("p_des =",p_des)
+    p_obj = 3.14
     # while True:
     #     position = mmc.get_data()
     #     print("Position",position)
-    while(p_des > .1):
+    while(p_des > 0.01):
         p_des = .99*p_des
-        tasks.append(mmc.send_command(p_des , 0, 2, 0, 0))
+        tasks.append(mmc.send_command(p_des , 0, 2.0, 0, 0))
         time.sleep(0.02)
-        # position = mmc.get_data()
         recep.append(mmc.get_data())
-        # print("Position",position)
     # a=1000
     # while(a > 0):
     #     # p_des = .99*p_des
-    #     tasks.append(mmc.send_command(p_des , 0, 5, 0, 0))
+    #     tasks.append(mmc.send_command(p_des , 0, 1, 0, 0))
     #     time.sleep(0.02)
     #     # position = mmc.get_data()
     #     recep.append(mmc.get_data())
     #     a=a-1
-    #     # print("Position",position)
+        # print("Position",position)
 
     mmc.disable_motor()
-    with open('pos_fix_response', 'w') as f:
-        write = csv.writer(f)
-        write.writerow(fields)
-        write.writerows(recep)
-    with open('pos_fix_send', 'w') as fa:
-        write = csv.writer(fa)
-        write.writerow(fields_2)
-        write.writerows(tasks)
+    # with open('response_kp_3', 'w') as f:
+    #     write = csv.writer(f)
+    #     write.writerow(response_motor)
+    #     write.writerows(recep)
+    # with open('control_kp_3', 'w') as fa:
+    #     write = csv.writer(fa)
+    #     write.writerow(fields_2)
+    #     write.writerows(tasks)
 
