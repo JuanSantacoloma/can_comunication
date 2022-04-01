@@ -39,7 +39,7 @@ b = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFD'
 #b = b + bytes(bytearray([id]))
 
 
-msg = can.Message(arbitration_id=0x3, data=b, is_extended_id=False)
+msg = can.Message(arbitration_id=0x1, data=b, is_extended_id=False)
 can0.send(msg)
 
 #os.system('sudo ifconfig can0 down')

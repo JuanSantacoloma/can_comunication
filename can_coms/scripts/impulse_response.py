@@ -9,7 +9,7 @@ import csv
 
 
 if __name__ == "__main__":
-    mmc = mm.MotorModuleController(3)        # Connect to the controller's serial port
+    mmc = mm.MotorModuleController(1)        # Connect to the controller's serial port
     tasks = []
     recep = []
     response_motor = ['Timestamp','POS', 'VEL', 'Torq']
@@ -29,26 +29,26 @@ if __name__ == "__main__":
     p_inicial = start_position[1]
     
     # Posicion objetivo
-    p_obj = 3.14
+    p_obj = -1.5
     p_actual = start_position[1]
     print(p_actual)
     error = p_obj
-    while(error > 0.1):
+    while(error < 0.1):
         # p_inicial = 1.01*p_inicial
         tasks.append(mmc.send_command(p_obj , 0, 1.0, 0, 0))
         time.sleep(0.02)
         p_actual = mmc.get_data()
         recep.append(p_actual)
         p_actual = p_actual[1]
-        error =p_obj -p_actual
+        error =p_obj +p_actual
         
         # print(p_actual)
     mmc.disable_motor()
-    with open('impulse_response_motor', 'w') as f:
+    with open('impulse_response_motor_1', 'w') as f:
         write = csv.writer(f)
         write.writerow(response_motor)
         write.writerows(recep)
-    with open('impulse_response_control', 'w') as fa:
+    with open('impulse_response_control_1', 'w') as fa:
         write = csv.writer(fa)
         write.writerow(fields_2)
         write.writerows(tasks)
