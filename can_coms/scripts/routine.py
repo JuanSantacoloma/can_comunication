@@ -35,7 +35,7 @@ if __name__ == "__main__":
     start_position = mmc.get_data()
 
     # Posicion inicial del motor
-    p_des = start_position[1]
+    p_des = start_position[2]
     
     # Posicion deseada
     print("msg_rec=",start_position)
@@ -44,19 +44,19 @@ if __name__ == "__main__":
     # while True:
     #     position = mmc.get_data()
     #     print("Position",position)
-    while(p_des > 0.01):
-        p_des = .99*p_des
-        tasks.append(mmc.send_command(p_des , 0, 2.0, 0, 0))
-        time.sleep(0.02)
-        recep.append(mmc.get_data())
-    # a=1000
-    # while(a > 0):
-    #     # p_des = .99*p_des
-    #     tasks.append(mmc.send_command(p_des , 0, 1, 0, 0))
+    # while(p_des > 0.01):
+    #     p_des = .99*p_des
+    #     tasks.append(mmc.send_command(p_des , 0, 2.0, 0, 0))
     #     time.sleep(0.02)
-    #     # position = mmc.get_data()
     #     recep.append(mmc.get_data())
-    #     a=a-1
+    a=1000
+    while(a > 0):
+        # p_des = .99*p_des
+        tasks.append(mmc.send_command(p_des , 0, 2, 0, 0))
+        time.sleep(0.02)
+        # position = mmc.get_data()
+        recep.append(mmc.get_data())
+        a=a-1
         # print("Position",position)
 
     mmc.disable_motor()

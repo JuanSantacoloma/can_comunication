@@ -34,8 +34,8 @@ os.system('sudo ifconfig can0 up')
 
 can0 = can.interface.Bus(channel = 'can0', bustype = 'socketcan')
 #id = 1
-b = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFD'
-# b = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFC'
+# b = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFD'
+b = b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFC'
 #b = b + bytes(bytearray([id]))
 
 

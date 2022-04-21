@@ -112,6 +112,7 @@ class MotorModuleController():
         v_int_r = (b_driver[3]<<4)|(b_driver[4]>>4)
         t_int_r = ((b_driver[4]&0xF)<<8)|b_driver[5]
         self.rx_msg =[]
+        self.rx_msg.append(id)
         self.rx_msg.append(msg_recv.timestamp)
         self.rx_msg.append(self.uint_to_float(p_int_r, self.p_min, self.p_max, 16))
         self.rx_msg.append(self.uint_to_float(v_int_r, self.v_min, self.v_max, 12))
